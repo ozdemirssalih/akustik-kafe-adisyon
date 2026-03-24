@@ -36,6 +36,23 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
     setLoading(true)
 
     try {
+      const cash = paymentMethod === 'cash' ? total : (paymentMethod === 'split' ? parseFloat(cashAmount) : 0)
+      const card = paymentMethod === 'card' ? total : (paymentMethod === 'split' ? parseFloat(cardAmount) : 0)
+
+      // Create payment record
+      const { error: paymentError } = await supabase
+        .from('payments')
+        .insert({
+          order_id: order.id,
+          payment_method: paymentMethod,
+          cash_amount: cash,
+          card_amount: card,
+          total_amount: total,
+          paid_at: new Date().toISOString(),
+        })
+
+      if (paymentError) throw paymentError
+
       // Update order
       const { error: orderError } = await supabase
         .from('orders')

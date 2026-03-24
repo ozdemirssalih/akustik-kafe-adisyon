@@ -71,6 +71,17 @@ export interface OrderItem {
   updated_at: string
 }
 
+export interface Payment {
+  id: string
+  order_id: string
+  payment_method: PaymentMethod
+  cash_amount: number
+  card_amount: number
+  total_amount: number
+  paid_at: string
+  created_at: string
+}
+
 // With relations
 export interface OrderWithDetails extends Order {
   table: Table
