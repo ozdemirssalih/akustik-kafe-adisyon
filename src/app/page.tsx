@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
+import { Button } from '@/components/ui/button'
+import { BarChart3 } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -21,14 +24,22 @@ export default async function HomePage() {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">Masa Durumu</h1>
-          <form action="/api/auth/signout" method="post">
-            <button
-              type="submit"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Çıkış
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <Link href="/reports">
+              <Button variant="ghost" size="sm">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Raporlar
+              </Button>
+            </Link>
+            <form action="/api/auth/signout" method="post">
+              <button
+                type="submit"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Çıkış
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 
