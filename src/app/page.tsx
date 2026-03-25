@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
 import { Button } from '@/components/ui/button'
-import { BarChart3, Coffee, UtensilsCrossed, LogOut } from 'lucide-react'
+import { BarChart3, Coffee, UtensilsCrossed, LogOut, Settings } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -37,6 +37,12 @@ export default async function HomePage() {
               <Button variant="ghost" size="sm">
                 <UtensilsCrossed className="w-4 h-4 mr-1.5" />
                 Menu
+              </Button>
+            </Link>
+            <Link href="/tables">
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4 mr-1.5" />
+                Masalar
               </Button>
             </Link>
             <Link href="/reports">
