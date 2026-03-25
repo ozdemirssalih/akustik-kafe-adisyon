@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
+import { StickyNotes } from '@/components/tables/sticky-notes'
 import { Button } from '@/components/ui/button'
 import { BarChart3, UtensilsCrossed, LogOut, Settings } from 'lucide-react'
 
@@ -18,6 +19,11 @@ export default async function HomePage() {
     .from('tables')
     .select('*')
     .order('table_number')
+
+  const { data: stickyNotes } = await supabase
+    .from('sticky_notes')
+    .select('*, table:tables(table_number)')
+    .order('created_at', { ascending: false })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">
@@ -53,8 +59,9 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <main className="p-6 max-w-7xl mx-auto">
+      <main className="p-6 max-w-7xl mx-auto space-y-8">
         <TableGrid tables={tables || []} />
+        <StickyNotes notes={stickyNotes || []} tables={tables || []} />
       </main>
     </div>
   )
