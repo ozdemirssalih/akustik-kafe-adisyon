@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/utils/currency'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,8 @@ import {
   X,
   Coffee,
   Package,
+  ImagePlus,
+  ExternalLink,
 } from 'lucide-react'
 
 interface MenuManagerProps {
@@ -28,6 +31,7 @@ interface MenuManagerProps {
 export function MenuManager({ categories: initCategories, products: initProducts }: MenuManagerProps) {
   const router = useRouter()
   const supabase = createClient()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [categories, setCategories] = useState(initCategories)
   const [products, setProducts] = useState(initProducts)
@@ -43,7 +47,9 @@ export function MenuManager({ categories: initCategories, products: initProducts
     price: '',
     category_id: '',
     is_available: true,
+    image_url: '',
   })
+  const [uploading, setUploading] = useState(false)
 
   // Category form
   const [showCategoryForm, setShowCategoryForm] = useState(false)
@@ -57,6 +63,29 @@ export function MenuManager({ categories: initCategories, products: initProducts
     ? products
     : products.filter(p => p.category_id === selectedCategory)
 
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+  // === IMAGE UPLOAD ===
+  const uploadImage = async (file: File) => {
+    setUploading(true)
+    const ext = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false })
+
+    if (error) {
+      alert('Yukleme hatasi: ' + error.message)
+      setUploading(false)
+      return
+    }
+
+    const url = `${SUPABASE_URL}/storage/v1/object/public/product-images/${fileName}`
+    setProductForm({ ...productForm, image_url: url })
+    setUploading(false)
+  }
+
   // === PRODUCT OPERATIONS ===
   const openNewProduct = () => {
     setEditingProduct(null)
@@ -66,6 +95,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
       price: '',
       category_id: categories[0]?.id || '',
       is_available: true,
+      image_url: '',
     })
     setShowProductForm(true)
   }
@@ -78,6 +108,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
       price: product.price.toString(),
       category_id: product.category_id,
       is_available: product.is_available,
+      image_url: product.image_url || '',
     })
     setShowProductForm(true)
   }
@@ -89,6 +120,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
       price: parseFloat(productForm.price),
       category_id: productForm.category_id,
       is_available: productForm.is_available,
+      image_url: productForm.image_url || null,
     }
 
     if (editingProduct) {
@@ -105,8 +137,6 @@ export function MenuManager({ categories: initCategories, products: initProducts
     }
 
     setShowProductForm(false)
-    router.refresh()
-    // Reload products
     const { data: newProducts } = await supabase
       .from('products')
       .select('*, category:categories(name)')
@@ -198,6 +228,12 @@ export function MenuManager({ categories: initCategories, products: initProducts
             <h1 className="text-xl font-bold text-stone-900">Menu Yonetimi</h1>
           </div>
           <div className="flex gap-2">
+            <Link href="/m" target="_blank">
+              <Button variant="ghost" size="sm">
+                <ExternalLink className="w-4 h-4 mr-1" />
+                Musteri Menusu
+              </Button>
+            </Link>
             <button
               onClick={() => setActiveTab('products')}
               className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
@@ -227,7 +263,6 @@ export function MenuManager({ categories: initCategories, products: initProducts
       <main className="p-4 max-w-7xl mx-auto">
         {activeTab === 'products' ? (
           <div className="space-y-4">
-            {/* Category filter + Add button */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex gap-2 overflow-x-auto">
                 <button
@@ -263,21 +298,35 @@ export function MenuManager({ categories: initCategories, products: initProducts
               </Button>
             </div>
 
-            {/* Products list */}
             <div className="grid gap-3">
               {filteredProducts.map(product => (
                 <Card key={product.id} className={`p-4 ${!product.is_available ? 'opacity-60' : ''}`}>
                   <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-stone-900">{product.name}</h3>
-                        <Badge variant={product.is_available ? 'success' : 'danger'}>
-                          {product.is_available ? 'Aktif' : 'Pasif'}
-                        </Badge>
+                    <div className="flex items-center gap-3 flex-1">
+                      {product.image_url ? (
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0">
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-14 h-14 rounded-xl bg-stone-100 flex items-center justify-center flex-shrink-0">
+                          <Package className="w-6 h-6 text-stone-400" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-stone-900">{product.name}</h3>
+                          <Badge variant={product.is_available ? 'success' : 'danger'}>
+                            {product.is_available ? 'Aktif' : 'Pasif'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-stone-500 mt-0.5">
+                          {product.category?.name} {product.description ? `- ${product.description}` : ''}
+                        </p>
                       </div>
-                      <p className="text-sm text-stone-500 mt-0.5">
-                        {product.category?.name} {product.description ? `- ${product.description}` : ''}
-                      </p>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-lg font-bold text-amber-700">
@@ -362,8 +411,8 @@ export function MenuManager({ categories: initCategories, products: initProducts
       {/* Product Modal */}
       {showProductForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <div className="p-4 border-b flex items-center justify-between">
+          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white rounded-t-2xl">
               <h2 className="font-bold text-lg text-stone-900">
                 {editingProduct ? 'Urun Duzenle' : 'Yeni Urun'}
               </h2>
@@ -372,6 +421,59 @@ export function MenuManager({ categories: initCategories, products: initProducts
               </button>
             </div>
             <div className="p-4 space-y-4">
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-stone-700 mb-1">Urun Fotografi</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) uploadImage(file)
+                  }}
+                />
+                {productForm.image_url ? (
+                  <div className="relative">
+                    <img
+                      src={productForm.image_url}
+                      alt="Urun"
+                      className="w-full h-48 object-cover rounded-xl"
+                    />
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 bg-white/90 rounded-lg shadow hover:bg-white transition-colors"
+                      >
+                        <Pencil className="w-4 h-4 text-stone-600" />
+                      </button>
+                      <button
+                        onClick={() => setProductForm({ ...productForm, image_url: '' })}
+                        className="p-2 bg-white/90 rounded-lg shadow hover:bg-white transition-colors"
+                      >
+                        <X className="w-4 h-4 text-red-500" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="w-full h-32 border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center gap-2 text-stone-400 hover:border-amber-400 hover:text-amber-600 transition-colors"
+                  >
+                    {uploading ? (
+                      <span className="text-sm font-medium">Yukleniyor...</span>
+                    ) : (
+                      <>
+                        <ImagePlus className="w-8 h-8" />
+                        <span className="text-sm font-medium">Fotograf Yukle</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-stone-700 mb-1">Urun Adi</label>
                 <Input
