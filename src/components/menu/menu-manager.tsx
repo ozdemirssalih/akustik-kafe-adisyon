@@ -21,6 +21,8 @@ import {
   Package,
   ImagePlus,
   ExternalLink,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react'
 
 interface MenuManagerProps {
@@ -215,6 +217,49 @@ export function MenuManager({ categories: initCategories, products: initProducts
     setCategories(categories.filter(c => c.id !== id))
   }
 
+  // === REORDER OPERATIONS ===
+  const moveProduct = async (product: any, direction: 'up' | 'down') => {
+    const catProducts = products
+      .filter(p => p.category_id === product.category_id)
+      .sort((a, b) => a.display_order - b.display_order)
+    const idx = catProducts.findIndex(p => p.id === product.id)
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1
+    if (swapIdx < 0 || swapIdx >= catProducts.length) return
+
+    const other = catProducts[swapIdx]
+    const tempOrder = product.display_order
+    const otherOrder = other.display_order
+
+    await supabase.from('products').update({ display_order: otherOrder }).eq('id', product.id)
+    await supabase.from('products').update({ display_order: tempOrder }).eq('id', other.id)
+
+    setProducts(products.map(p => {
+      if (p.id === product.id) return { ...p, display_order: otherOrder }
+      if (p.id === other.id) return { ...p, display_order: tempOrder }
+      return p
+    }).sort((a, b) => a.display_order - b.display_order))
+  }
+
+  const moveCategory = async (cat: any, direction: 'up' | 'down') => {
+    const sorted = [...categories].sort((a, b) => a.display_order - b.display_order)
+    const idx = sorted.findIndex(c => c.id === cat.id)
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1
+    if (swapIdx < 0 || swapIdx >= sorted.length) return
+
+    const other = sorted[swapIdx]
+    const tempOrder = cat.display_order
+    const otherOrder = other.display_order
+
+    await supabase.from('categories').update({ display_order: otherOrder }).eq('id', cat.id)
+    await supabase.from('categories').update({ display_order: tempOrder }).eq('id', other.id)
+
+    setCategories(categories.map(c => {
+      if (c.id === cat.id) return { ...c, display_order: otherOrder }
+      if (c.id === other.id) return { ...c, display_order: tempOrder }
+      return c
+    }).sort((a, b) => a.display_order - b.display_order))
+  }
+
   return (
     <>
       <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
@@ -334,6 +379,20 @@ export function MenuManager({ categories: initCategories, products: initProducts
                       </span>
                       <div className="flex gap-1">
                         <button
+                          onClick={() => moveProduct(product, 'up')}
+                          className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
+                          title="Yukari tasi"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => moveProduct(product, 'down')}
+                          className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
+                          title="Asagi tasi"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                        <button
                           onClick={() => toggleAvailability(product)}
                           className={`p-2 rounded-lg transition-colors ${
                             product.is_available
@@ -386,6 +445,20 @@ export function MenuManager({ categories: initCategories, products: initProducts
                         <p className="text-sm text-stone-500">{count} urun - Sira: {cat.display_order}</p>
                       </div>
                       <div className="flex gap-1">
+                        <button
+                          onClick={() => moveCategory(cat, 'up')}
+                          className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
+                          title="Yukari tasi"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => moveCategory(cat, 'down')}
+                          className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
+                          title="Asagi tasi"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => openEditCategory(cat)}
                           className="p-2 rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
