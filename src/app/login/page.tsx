@@ -6,7 +6,6 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { Coffee } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -39,11 +38,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 px-4">
       <Card className="w-full max-w-md shadow-xl border-stone-200/60">
         <div className="bg-gradient-to-r from-amber-700 to-amber-800 rounded-t-2xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4">
-            <Coffee className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Akustik Kafe</h1>
-          <p className="text-amber-200 text-sm mt-1">Adisyon Sistemi</p>
+          <img src="/logo.png" alt="Akustik Kafe" className="h-20 w-auto mx-auto" />
         </div>
         <CardContent className="p-6 pt-6">
           <form onSubmit={handleLogin} className="space-y-4">

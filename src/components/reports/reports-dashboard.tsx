@@ -63,7 +63,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Raporlar</h1>
+            <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto" />
           </div>
           <div className="flex gap-2">
             <button

@@ -19,12 +19,8 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
   return (
     <div className="min-h-screen bg-stone-950">
       {/* Hero Header */}
-      <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-12 pb-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur rounded-2xl mb-4">
-          <Coffee className="w-8 h-8 text-amber-200" />
-        </div>
-        <h1 className="text-3xl font-black text-white tracking-tight">Akustik Kafe</h1>
-        <p className="text-amber-300/80 text-sm mt-1 font-medium">Menu</p>
+      <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-10 pb-8 text-center">
+        <img src="/logo.png" alt="Akustik Kafe" className="h-24 w-auto mx-auto" />
       </div>
 
       {/* Category Tabs */}
@@ -97,7 +93,7 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-stone-800">
-        <p className="text-stone-600 text-xs">Akustik Kafe</p>
+        <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto mx-auto opacity-40" />
       </footer>
     </div>
   )

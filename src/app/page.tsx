@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
 import { Button } from '@/components/ui/button'
-import { BarChart3, Coffee, UtensilsCrossed, LogOut, Settings } from 'lucide-react'
+import { BarChart3, UtensilsCrossed, LogOut, Settings } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -23,15 +23,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">
       <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-amber-700 rounded-xl">
-              <Coffee className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-stone-900">Akustik Kafe</h1>
-              <p className="text-xs text-stone-500">Masa Durumu</p>
-            </div>
-          </div>
+          <img src="/logo.png" alt="Akustik Kafe" className="h-10 w-auto" />
           <div className="flex items-center gap-2">
             <Link href="/menu">
               <Button variant="ghost" size="sm">

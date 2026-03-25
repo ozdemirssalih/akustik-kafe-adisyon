@@ -103,7 +103,7 @@ export function TableManager({ tables: initTables }: TableManagerProps) {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <h1 className="text-xl font-bold text-stone-900">Masa Yonetimi</h1>
+            <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto" />
           </div>
           <Button size="sm" onClick={openNew}>
             <Plus className="w-4 h-4 mr-1" />

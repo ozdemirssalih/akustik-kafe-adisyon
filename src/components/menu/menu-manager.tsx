@@ -225,7 +225,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <h1 className="text-xl font-bold text-stone-900">Menu Yonetimi</h1>
+            <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto" />
           </div>
           <div className="flex gap-2">
             <Link href="/m" target="_blank">
