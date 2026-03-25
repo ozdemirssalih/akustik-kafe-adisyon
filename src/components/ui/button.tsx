@@ -12,22 +12,22 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-colors',
+          'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'disabled:opacity-50 disabled:pointer-events-none',
+          'disabled:opacity-50 disabled:pointer-events-none active:scale-[0.97]',
           {
-            'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-600':
+            'bg-amber-700 text-white hover:bg-amber-800 focus-visible:ring-amber-600 shadow-md hover:shadow-lg':
               variant === 'primary',
-            'bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-400':
+            'bg-stone-200 text-stone-800 hover:bg-stone-300 focus-visible:ring-stone-400':
               variant === 'secondary',
-            'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600':
+            'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600 shadow-md':
               variant === 'danger',
-            'bg-transparent hover:bg-gray-100 focus-visible:ring-gray-400':
+            'bg-transparent text-stone-700 hover:bg-stone-100 focus-visible:ring-stone-400':
               variant === 'ghost',
           },
           {
             'px-3 py-1.5 text-sm': size === 'sm',
-            'px-4 py-2 text-base': size === 'md',
+            'px-5 py-2.5 text-base': size === 'md',
             'px-6 py-3 text-lg': size === 'lg',
           },
           className

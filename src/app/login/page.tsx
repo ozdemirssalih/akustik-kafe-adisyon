@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Coffee } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -35,24 +36,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center">Akustik Kafe</CardTitle>
-          <p className="text-center text-sm text-gray-600 mt-2">
-            Adisyon Sistemi
-          </p>
-        </CardHeader>
-        <CardContent>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 px-4">
+      <Card className="w-full max-w-md shadow-xl border-stone-200/60">
+        <div className="bg-gradient-to-r from-amber-700 to-amber-800 rounded-t-2xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4">
+            <Coffee className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-white">Akustik Kafe</h1>
+          <p className="text-amber-200 text-sm mt-1">Adisyon Sistemi</p>
+        </div>
+        <CardContent className="p-6 pt-6">
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="bg-red-50 text-red-600 px-4 py-2 rounded-md text-sm">
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm border border-red-200">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-stone-700 mb-1.5">
                 E-posta
               </label>
               <Input
@@ -65,24 +67,25 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Şifre
+              <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+                Sifre
               </label>
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
+                placeholder="********"
               />
             </div>
 
             <Button
               type="submit"
               className="w-full"
+              size="lg"
               disabled={loading}
             >
-              {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+              {loading ? 'Giris yapiliyor...' : 'Giris Yap'}
             </Button>
           </form>
         </CardContent>

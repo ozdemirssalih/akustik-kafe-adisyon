@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
 import { Button } from '@/components/ui/button'
-import { BarChart3 } from 'lucide-react'
+import { BarChart3, Coffee, UtensilsCrossed, LogOut } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -20,30 +20,42 @@ export default async function HomePage() {
     .order('table_number')
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Masa Durumu</h1>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">
+      <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 bg-amber-700 rounded-xl">
+              <Coffee className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-stone-900">Akustik Kafe</h1>
+              <p className="text-xs text-stone-500">Masa Durumu</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link href="/menu">
+              <Button variant="ghost" size="sm">
+                <UtensilsCrossed className="w-4 h-4 mr-1.5" />
+                Menu
+              </Button>
+            </Link>
             <Link href="/reports">
               <Button variant="ghost" size="sm">
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <BarChart3 className="w-4 h-4 mr-1.5" />
                 Raporlar
               </Button>
             </Link>
             <form action="/api/auth/signout" method="post">
-              <button
-                type="submit"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                Çıkış
-              </button>
+              <Button variant="ghost" size="sm" type="submit">
+                <LogOut className="w-4 h-4 mr-1.5" />
+                Cikis
+              </Button>
             </form>
           </div>
         </div>
       </header>
 
-      <main className="p-6">
+      <main className="p-6 max-w-7xl mx-auto">
         <TableGrid tables={tables || []} />
       </main>
     </div>

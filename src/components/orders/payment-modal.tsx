@@ -100,7 +100,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
             <p className="text-sm text-gray-600 mb-1">Masa {order.table.table_number}</p>
             <div className="flex justify-between items-center">
               <span className="font-medium">Toplam Tutar</span>
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-amber-700">
                 {formatCurrency(total)}
               </span>
             </div>
@@ -120,7 +120,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
                 }}
                 className={`p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-colors ${
                   paymentMethod === 'cash'
-                    ? 'border-blue-600 bg-blue-50'
+                    ? 'border-amber-600 bg-amber-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -136,7 +136,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
                 }}
                 className={`p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-colors ${
                   paymentMethod === 'card'
-                    ? 'border-blue-600 bg-blue-50'
+                    ? 'border-amber-600 bg-amber-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -153,7 +153,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
                 }}
                 className={`p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-colors ${
                   paymentMethod === 'split'
-                    ? 'border-blue-600 bg-blue-50'
+                    ? 'border-amber-600 bg-amber-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -178,7 +178,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
                   step="0.01"
                   value={cashAmount}
                   onChange={(e) => setCashAmount(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -190,7 +190,7 @@ export function PaymentModal({ order, onClose }: PaymentModalProps) {
                   step="0.01"
                   value={cardAmount}
                   onChange={(e) => setCardAmount(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 />
               </div>
               <div className="bg-gray-50 p-2 rounded flex justify-between text-sm">

@@ -33,8 +33,16 @@ export default async function ReportsPage() {
   // Get all closed orders for comparison
   const { data: allOrders } = await supabase
     .from('orders')
-    .select('*')
+    .select(`
+      *,
+      table:tables(table_number),
+      order_items(
+        *,
+        product:products(name, category_id)
+      )
+    `)
     .eq('status', 'closed')
+    .order('closed_at', { ascending: false })
 
   return (
     <div className="min-h-screen bg-gray-50">

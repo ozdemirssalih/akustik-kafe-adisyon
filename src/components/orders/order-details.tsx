@@ -158,7 +158,7 @@ export function OrderDetails({ order, categories }: any) {
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+      <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -197,7 +197,7 @@ export function OrderDetails({ order, categories }: any) {
                       onClick={() => setSelectedCategory(category.id)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${
                         selectedCategory === category.id
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-amber-700 text-white'
                           : 'bg-white text-gray-700'
                       }`}
                     >
@@ -211,10 +211,10 @@ export function OrderDetails({ order, categories }: any) {
                     <button
                       key={product.id}
                       onClick={() => addProduct(product)}
-                      className="bg-white p-3 rounded border hover:border-blue-400 text-left"
+                      className="bg-white p-3 rounded border hover:border-amber-400 text-left"
                     >
                       <p className="font-medium text-sm">{product.name}</p>
-                      <p className="text-xs text-blue-600">
+                      <p className="text-xs text-amber-700">
                         {formatCurrency(product.price)}
                       </p>
                     </button>

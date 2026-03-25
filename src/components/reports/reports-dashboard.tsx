@@ -55,7 +55,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+      <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/">
@@ -70,8 +70,8 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
               onClick={() => setView('today')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 view === 'today'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-amber-700 text-white shadow-md'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Bugün
@@ -80,8 +80,8 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
               onClick={() => setView('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 view === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-amber-700 text-white shadow-md'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Tüm Zamanlar
@@ -113,8 +113,8 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <ShoppingCart className="w-6 h-6 text-blue-600" />
+                  <div className="p-2 bg-amber-100 rounded-lg">
+                    <ShoppingCart className="w-6 h-6 text-amber-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Sipariş Sayısı</p>
@@ -176,7 +176,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
                         className="flex items-center justify-between p-3 bg-gray-50 rounded"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-600 rounded-full font-bold text-sm">
+                          <div className="flex items-center justify-center w-8 h-8 bg-amber-100 text-amber-700 rounded-full font-bold text-sm">
                             {index + 1}
                           </div>
                           <div>
@@ -186,7 +186,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
                             </p>
                           </div>
                         </div>
-                        <p className="font-semibold text-blue-600">
+                        <p className="font-semibold text-amber-700">
                           {formatCurrency(product.revenue)}
                         </p>
                       </div>
@@ -218,7 +218,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-blue-600">
+                          <p className="font-semibold text-amber-700">
                             {formatCurrency(order.total_amount)}
                           </p>
                           <Badge

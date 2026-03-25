@@ -132,10 +132,10 @@ export function OrderForm({ table, categories, waiterId }: OrderFormProps) {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-xl font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === category.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-amber-700 text-white shadow-md'
+                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
               }`}
             >
               {category.name}
@@ -149,10 +149,10 @@ export function OrderForm({ table, categories, waiterId }: OrderFormProps) {
             <button
               key={product.id}
               onClick={() => addItem(product)}
-              className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all text-left"
+              className="bg-white p-4 rounded-xl border border-stone-200 hover:border-amber-400 hover:shadow-lg transition-all text-left"
             >
               <p className="font-semibold text-gray-900 mb-1">{product.name}</p>
-              <p className="text-sm text-blue-600 font-medium">
+              <p className="text-sm text-amber-700 font-medium">
                 {formatCurrency(product.price)}
               </p>
             </button>
