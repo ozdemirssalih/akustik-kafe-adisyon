@@ -7,7 +7,7 @@ import { Table, Category, Product } from '@/lib/types/database'
 import { formatCurrency } from '@/lib/utils/currency'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Minus, Plus, X } from 'lucide-react'
+import { Minus, Plus, X, Search } from 'lucide-react'
 
 interface OrderItem {
   product: Product
@@ -28,6 +28,7 @@ export function OrderForm({ table, categories, waiterId }: OrderFormProps) {
     categories[0]?.id || ''
   )
   const [loading, setLoading] = useState(false)
+  const [search, setSearch] = useState('')
 
   const addItem = (product: Product) => {
     const existing = items.find((item) => item.product.id === product.id)
@@ -119,6 +120,10 @@ export function OrderForm({ table, categories, waiterId }: OrderFormProps) {
     }
   }
 
+  const allProducts = categories.flatMap(c => c.products.filter(p => p.is_available))
+  const searchResults = search.length >= 1
+    ? allProducts.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+    : []
   const currentCategory = categories.find((c) => c.id === selectedCategory)
   const availableProducts = currentCategory?.products.filter((p) => p.is_available) || []
 
@@ -126,38 +131,80 @@ export function OrderForm({ table, categories, waiterId }: OrderFormProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Product Selection */}
       <div className="lg:col-span-2 space-y-4">
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {categories.map((category) => (
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Urun ara..."
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 bg-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+          />
+          {search && (
             <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-xl font-semibold whitespace-nowrap transition-all ${
-                selectedCategory === category.id
-                  ? 'bg-amber-700 text-white shadow-md'
-                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
-              }`}
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
             >
-              {category.name}
+              <X className="w-4 h-4" />
             </button>
-          ))}
+          )}
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {availableProducts.map((product) => (
-            <button
-              key={product.id}
-              onClick={() => addItem(product)}
-              className="bg-white p-4 rounded-xl border border-stone-200 hover:border-amber-400 hover:shadow-lg transition-all text-left"
-            >
-              <p className="font-semibold text-gray-900 mb-1">{product.name}</p>
-              <p className="text-sm text-amber-700 font-medium">
-                {formatCurrency(product.price)}
-              </p>
-            </button>
-          ))}
-        </div>
+        {/* Search Results */}
+        {search.length >= 1 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {searchResults.length > 0 ? searchResults.map((product) => (
+              <button
+                key={product.id}
+                onClick={() => { addItem(product); setSearch('') }}
+                className="bg-white p-4 rounded-xl border border-amber-200 hover:border-amber-400 hover:shadow-lg transition-all text-left"
+              >
+                <p className="font-semibold text-stone-900 mb-1">{product.name}</p>
+                <p className="text-sm text-amber-700 font-medium">
+                  {formatCurrency(product.price)}
+                </p>
+              </button>
+            )) : (
+              <p className="col-span-full text-center text-stone-400 py-4">Sonuc bulunamadi</p>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Categories */}
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`px-4 py-2 rounded-xl font-semibold whitespace-nowrap transition-all ${
+                    selectedCategory === category.id
+                      ? 'bg-amber-700 text-white shadow-md'
+                      : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Products Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {availableProducts.map((product) => (
+                <button
+                  key={product.id}
+                  onClick={() => addItem(product)}
+                  className="bg-white p-4 rounded-xl border border-stone-200 hover:border-amber-400 hover:shadow-lg transition-all text-left"
+                >
+                  <p className="font-semibold text-stone-900 mb-1">{product.name}</p>
+                  <p className="text-sm text-amber-700 font-medium">
+                    {formatCurrency(product.price)}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Order Summary */}

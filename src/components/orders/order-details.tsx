@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PaymentModal } from './payment-modal'
-import { Minus, Plus, X } from 'lucide-react'
+import { Minus, Plus, X, Search } from 'lucide-react'
 
 export function OrderDetails({ order, categories }: any) {
   const router = useRouter()
@@ -18,6 +18,7 @@ export function OrderDetails({ order, categories }: any) {
   const [showProducts, setShowProducts] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(categories[0]?.id || '')
   const [loading, setLoading] = useState(false)
+  const [detailSearch, setDetailSearch] = useState('')
 
   const supabase = createClient()
 
@@ -153,6 +154,10 @@ export function OrderDetails({ order, categories }: any) {
     setLoading(false)
   }
 
+  const allDetailProducts = categories.flatMap((c: any) => c.products?.filter((p: any) => p.is_available) || [])
+  const detailSearchResults = detailSearch.length >= 1
+    ? allDetailProducts.filter((p: any) => p.name.toLowerCase().includes(detailSearch.toLowerCase()))
+    : []
   const currentCategory = categories.find((c: any) => c.id === selectedCategory)
   const availableProducts = currentCategory?.products.filter((p: any) => p.is_available) || []
 
@@ -190,36 +195,70 @@ export function OrderDetails({ order, categories }: any) {
 
             {showProducts && order.status === 'open' && (
               <div className="p-4 border-b space-y-3 bg-gray-50">
-                <div className="flex gap-2 overflow-x-auto">
-                  {categories.map((category: any) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${
-                        selectedCategory === category.id
-                          ? 'bg-amber-700 text-white'
-                          : 'bg-white text-gray-700'
-                      }`}
-                    >
-                      {category.name}
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                  <input
+                    type="text"
+                    value={detailSearch}
+                    onChange={(e) => setDetailSearch(e.target.value)}
+                    placeholder="Urun ara..."
+                    className="w-full pl-9 pr-8 py-2 rounded-xl border border-stone-200 bg-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                  {detailSearch && (
+                    <button onClick={() => setDetailSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400">
+                      <X className="w-3.5 h-3.5" />
                     </button>
-                  ))}
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {availableProducts.map((product: any) => (
-                    <button
-                      key={product.id}
-                      onClick={() => addProduct(product)}
-                      className="bg-white p-3 rounded border hover:border-amber-400 text-left"
-                    >
-                      <p className="font-medium text-sm">{product.name}</p>
-                      <p className="text-xs text-amber-700">
-                        {formatCurrency(product.price)}
-                      </p>
-                    </button>
-                  ))}
-                </div>
+                {detailSearch.length >= 1 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {detailSearchResults.length > 0 ? detailSearchResults.map((product: any) => (
+                      <button
+                        key={product.id}
+                        onClick={() => { addProduct(product); setDetailSearch('') }}
+                        className="bg-white p-3 rounded-xl border border-amber-200 hover:border-amber-400 text-left"
+                      >
+                        <p className="font-medium text-sm">{product.name}</p>
+                        <p className="text-xs text-amber-700">{formatCurrency(product.price)}</p>
+                      </button>
+                    )) : (
+                      <p className="col-span-full text-center text-stone-400 py-2 text-sm">Sonuc bulunamadi</p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-2 overflow-x-auto">
+                      {categories.map((category: any) => (
+                        <button
+                          key={category.id}
+                          onClick={() => setSelectedCategory(category.id)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${
+                            selectedCategory === category.id
+                              ? 'bg-amber-700 text-white'
+                              : 'bg-white text-gray-700'
+                          }`}
+                        >
+                          {category.name}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {availableProducts.map((product: any) => (
+                        <button
+                          key={product.id}
+                          onClick={() => addProduct(product)}
+                          className="bg-white p-3 rounded-xl border hover:border-amber-400 text-left"
+                        >
+                          <p className="font-medium text-sm">{product.name}</p>
+                          <p className="text-xs text-amber-700">{formatCurrency(product.price)}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
