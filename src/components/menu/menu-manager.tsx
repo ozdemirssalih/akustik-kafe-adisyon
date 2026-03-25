@@ -225,7 +225,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Akustik Kafe" className="h-14 w-auto" />
           </div>
           <div className="flex gap-2">
             <Link href="/m" target="_blank">

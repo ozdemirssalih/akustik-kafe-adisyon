@@ -20,7 +20,7 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
     <div className="min-h-screen bg-stone-950">
       {/* Hero Header */}
       <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-10 pb-8 text-center">
-        <img src="/logo.png" alt="Akustik Kafe" className="h-24 w-auto mx-auto" />
+        <img src="/logo.png" alt="Akustik Kafe" className="h-72 w-auto mx-auto" />
       </div>
 
       {/* Category Tabs */}
@@ -93,7 +93,7 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-stone-800">
-        <img src="/logo.png" alt="Akustik Kafe" className="h-8 w-auto mx-auto opacity-40" />
+        <img src="/logo.png" alt="Akustik Kafe" className="h-16 w-auto mx-auto opacity-40" />
       </footer>
     </div>
   )
