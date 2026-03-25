@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 px-4">
       <Card className="w-full max-w-md shadow-xl border-stone-200/60">
         <div className="bg-gradient-to-r from-amber-700 to-amber-800 rounded-t-2xl p-8 text-center">
-          <img src="/logo.png" alt="Akustik Kafe" className="h-[450px] w-auto mx-auto" />
+          <img src="/logo.png" alt="Akustik Kafe" className="h-[200px] w-auto object-contain mx-auto" />
         </div>
         <CardContent className="p-6 pt-6">
           <form onSubmit={handleLogin} className="space-y-4">

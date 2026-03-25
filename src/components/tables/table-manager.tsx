@@ -103,7 +103,7 @@ export function TableManager({ tables: initTables }: TableManagerProps) {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-14 w-auto" />
+            <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
           </div>
           <Button size="sm" onClick={openNew}>
             <Plus className="w-4 h-4 mr-1" />

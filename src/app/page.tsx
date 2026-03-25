@@ -23,7 +23,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">
       <header className="bg-white/80 backdrop-blur-md border-b border-stone-200/60 px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <img src="/logo.png" alt="Akustik Kafe" className="h-14 w-auto" />
+          <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
           <div className="flex items-center gap-2">
             <Link href="/menu">
               <Button variant="ghost" size="sm">
