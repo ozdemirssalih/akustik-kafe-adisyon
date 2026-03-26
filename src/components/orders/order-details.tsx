@@ -271,11 +271,19 @@ export function OrderDetails({ order, categories }: any) {
                   <div className="space-y-3">
                     <div>
                       <label className="text-sm font-semibold text-stone-700 block mb-1">Nakit</label>
-                      <input type="number" step="0.01" value={cashAmount} onChange={(e) => setCashAmount(e.target.value)} className="w-full px-3 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
+                      <input type="number" step="0.01" value={cashAmount}
+                        onChange={(e) => { setCashAmount(e.target.value); setCardAmount((total - (parseFloat(e.target.value) || 0)).toFixed(2)) }}
+                        className="w-full px-3 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-stone-700 block mb-1">Kart</label>
-                      <input type="number" step="0.01" value={cardAmount} onChange={(e) => setCardAmount(e.target.value)} className="w-full px-3 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
+                      <input type="number" step="0.01" value={cardAmount}
+                        onChange={(e) => { setCardAmount(e.target.value); setCashAmount((total - (parseFloat(e.target.value) || 0)).toFixed(2)) }}
+                        className="w-full px-3 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
+                    </div>
+                    <div className="bg-stone-50 p-2 rounded-xl flex justify-between text-sm">
+                      <span>Toplam Odeme:</span>
+                      <span className="font-semibold">{formatCurrency((parseFloat(cashAmount) || 0) + (parseFloat(cardAmount) || 0))}</span>
                     </div>
                   </div>
                 )}
