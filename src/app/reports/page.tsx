@@ -14,7 +14,7 @@ export default async function ReportsPage() {
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
 
-  // Get today's closed orders
+  // Get today's closed orders with payments
   const { data: orders } = await supabase
     .from('orders')
     .select(`
@@ -23,7 +23,8 @@ export default async function ReportsPage() {
       order_items(
         *,
         product:products(name, category_id)
-      )
+      ),
+      payments(cash_amount, card_amount, payment_method)
     `)
     .eq('status', 'closed')
     .gte('closed_at', today.toISOString())
@@ -39,7 +40,8 @@ export default async function ReportsPage() {
       order_items(
         *,
         product:products(name, category_id)
-      )
+      ),
+      payments(cash_amount, card_amount, payment_method)
     `)
     .eq('status', 'closed')
     .order('closed_at', { ascending: false })

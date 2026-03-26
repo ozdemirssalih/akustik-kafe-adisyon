@@ -27,8 +27,20 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
   const cardOrders = displayOrders.filter((o) => o.payment_method === 'card')
   const splitOrders = displayOrders.filter((o) => o.payment_method === 'split')
 
+  // Nakit: tamamen nakit siparişler + bölümlü ödemelerin nakit kısmı
   const cashTotal = cashOrders.reduce((sum, o) => sum + parseFloat(o.total_amount), 0)
+    + splitOrders.reduce((sum, o) => {
+      const payment = o.payments?.[0]
+      return sum + (payment ? parseFloat(payment.cash_amount || 0) : 0)
+    }, 0)
+
+  // Kart: tamamen kart siparişler + bölümlü ödemelerin kart kısmı
   const cardTotal = cardOrders.reduce((sum, o) => sum + parseFloat(o.total_amount), 0)
+    + splitOrders.reduce((sum, o) => {
+      const payment = o.payments?.[0]
+      return sum + (payment ? parseFloat(payment.card_amount || 0) : 0)
+    }, 0)
+
   const splitTotal = splitOrders.reduce((sum, o) => sum + parseFloat(o.total_amount), 0)
 
   // Product statistics
