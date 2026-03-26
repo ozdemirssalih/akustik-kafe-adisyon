@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
 import { StickyNotes } from '@/components/tables/sticky-notes'
 import { Button } from '@/components/ui/button'
-import { BarChart3, UtensilsCrossed, LogOut, Settings, ClipboardList } from 'lucide-react'
+import { BarChart3, UtensilsCrossed, LogOut, Settings, ClipboardList, Inbox } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -41,6 +41,12 @@ export default async function HomePage() {
               <Button variant="ghost" size="sm">
                 <Settings className="w-4 h-4 mr-1.5" />
                 Masalar
+              </Button>
+            </Link>
+            <Link href="/inbox">
+              <Button variant="ghost" size="sm">
+                <Inbox className="w-4 h-4 mr-1.5" />
+                Gelen Kutusu
               </Button>
             </Link>
             <Link href="/history">

@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/utils/currency'
-import { Coffee, UtensilsCrossed } from 'lucide-react'
+import { Coffee, UtensilsCrossed, MessageSquarePlus, X, Send } from 'lucide-react'
 
 interface PublicMenuProps {
   categories: any[]
@@ -11,16 +12,45 @@ interface PublicMenuProps {
 
 export function PublicMenu({ categories, products }: PublicMenuProps) {
   const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [nickname, setNickname] = useState('')
+  const [message, setMessage] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
 
   const filteredProducts = activeCategory === 'all'
     ? products
     : products.filter(p => p.category_id === activeCategory)
 
+  const handleSendFeedback = async () => {
+    if (!nickname.trim() || !message.trim()) return
+    setSending(true)
+    const supabase = createClient()
+    const { error } = await supabase.from('feedback').insert({
+      nickname: nickname.trim(),
+      message: message.trim(),
+    })
+    setSending(false)
+    if (error) { alert('Gonderilemedi, tekrar deneyin.'); return }
+    setSent(true)
+    setNickname('')
+    setMessage('')
+    setTimeout(() => { setSent(false); setShowFeedback(false) }, 2000)
+  }
+
   return (
     <div className="min-h-screen bg-stone-950">
       {/* Hero Header */}
-      <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-10 pb-8 text-center">
+      <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-10 pb-8 text-center relative">
         <img src="/logo.png" alt="Akustik Kafe" className="h-[216px] w-auto object-contain mx-auto" />
+        {/* Feedback button */}
+        <button
+          onClick={() => setShowFeedback(true)}
+          className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-2 bg-white/10 backdrop-blur rounded-xl text-amber-200 text-xs font-semibold hover:bg-white/20 transition-all"
+        >
+          <MessageSquarePlus className="w-4 h-4" />
+          Dilek / Sikayet
+        </button>
       </div>
 
       {/* Category Tabs */}
@@ -55,7 +85,6 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
       {/* Menu Items */}
       <main className="px-4 py-6 max-w-3xl mx-auto">
         {activeCategory === 'all' ? (
-          // Show by category
           <div className="space-y-8">
             {categories.map(cat => {
               const catProducts = products.filter(p => p.category_id === cat.id)
@@ -95,6 +124,64 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
       <footer className="text-center py-8 border-t border-stone-800">
         <img src="/logo.png" alt="Akustik Kafe" className="h-[48px] w-auto object-contain mx-auto opacity-40" />
       </footer>
+
+      {/* Feedback Modal */}
+      {showFeedback && (
+        <div className="fixed inset-0 bg-black/70 flex items-end sm:items-center justify-center z-50 p-4">
+          <div className="bg-stone-900 rounded-2xl w-full max-w-md border border-stone-700 overflow-hidden">
+            <div className="p-4 border-b border-stone-700 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MessageSquarePlus className="w-5 h-5 text-amber-500" />
+                <h2 className="font-bold text-white">Dilek / Sikayet</h2>
+              </div>
+              <button onClick={() => setShowFeedback(false)} className="text-stone-500 hover:text-stone-300">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {sent ? (
+              <div className="p-8 text-center">
+                <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Send className="w-7 h-7 text-emerald-400" />
+                </div>
+                <p className="text-white font-semibold">Tesekkurler!</p>
+                <p className="text-stone-400 text-sm mt-1">Mesajiniz iletildi.</p>
+              </div>
+            ) : (
+              <div className="p-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-stone-400 mb-1.5">Isminiz / Nickname</label>
+                  <input
+                    type="text"
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    placeholder="Ornek: Ahmet"
+                    className="w-full px-3 py-2.5 rounded-xl bg-stone-800 border border-stone-700 text-white text-sm placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-stone-400 mb-1.5">Mesajiniz</label>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Dilek, sikayet veya onerinizi yazin..."
+                    rows={4}
+                    className="w-full px-3 py-2.5 rounded-xl bg-stone-800 border border-stone-700 text-white text-sm placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+                  />
+                </div>
+                <button
+                  onClick={handleSendFeedback}
+                  disabled={!nickname.trim() || !message.trim() || sending}
+                  className="w-full py-3 rounded-xl bg-amber-600 text-white font-semibold text-sm hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  {sending ? 'Gonderiliyor...' : 'Gonder'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
