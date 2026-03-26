@@ -68,8 +68,12 @@ export function OrderForm({ table, categories, waiterId, existingOrder }: OrderF
     const { data: order, error } = await supabase.from('orders').insert({
       table_id: table.id, waiter_id: waiterId, status: 'open', subtotal: 0, tax_amount: 0, total_amount: 0
     }).select().single()
-    if (error) throw error
-    await supabase.from('tables').update({ status: 'occupied' }).eq('id', table.id)
+    if (error) {
+      console.error('Order create error:', error)
+      throw new Error('Siparis olusturulamadi: ' + error.message)
+    }
+    const { error: tableErr } = await supabase.from('tables').update({ status: 'occupied' }).eq('id', table.id)
+    if (tableErr) console.error('Table status error:', tableErr)
     setOrderId(order.id)
     return order.id
   }
@@ -155,9 +159,14 @@ export function OrderForm({ table, categories, waiterId, existingOrder }: OrderF
         order_id: oid, payment_method: paymentMethod, cash_amount: cash, card_amount: card, total_amount: total, paid_at: new Date().toISOString()
       })
 
-      await supabase.from('tables').update({ status: 'available' }).eq('id', table.id)
+      const { error: tableError } = await supabase.from('tables').update({ status: 'available' }).eq('id', table.id)
+      if (tableError) console.error('Table update error:', tableError)
       router.push('/')
-    } catch { alert('Odeme islemi basarisiz!') }
+      router.refresh()
+    } catch (err) {
+      console.error('Payment error:', err)
+      alert('Odeme islemi basarisiz! ' + (err instanceof Error ? err.message : ''))
+    }
     finally { setLoading(false) }
   }
 
