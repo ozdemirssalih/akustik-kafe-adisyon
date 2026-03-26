@@ -16,7 +16,6 @@ export default async function NewOrderPage({
   const tableId = params.table
   if (!tableId) redirect('/')
 
-  // Get table info
   const { data: table } = await supabase
     .from('tables')
     .select('*')
@@ -25,27 +24,27 @@ export default async function NewOrderPage({
 
   if (!table) redirect('/')
 
-  // Check if table already has an open order - redirect to it
+  // Check if table already has an open order - load its items
   const { data: existingOrder } = await supabase
     .from('orders')
-    .select('id')
+    .select(`
+      *,
+      order_items(
+        *,
+        product:products(*)
+      )
+    `)
     .eq('table_id', tableId)
     .eq('status', 'open')
     .limit(1)
     .single()
 
-  if (existingOrder) {
-    redirect(`/orders/${existingOrder.id}`)
-  }
-
-  // Get products with categories
   const { data: categories } = await supabase
     .from('categories')
     .select('*, products(*)')
     .eq('is_active', true)
     .order('display_order')
 
-  // Get user profile for waiter_id
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -70,6 +69,7 @@ export default async function NewOrderPage({
           table={table}
           categories={categories || []}
           waiterId={profile?.id || user.id}
+          existingOrder={existingOrder || null}
         />
       </main>
     </div>
