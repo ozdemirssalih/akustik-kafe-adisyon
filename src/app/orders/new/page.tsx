@@ -11,46 +11,23 @@ export default async function NewOrderPage({
   const supabase = await createClient()
   const params = await searchParams
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
   const tableId = params.table
   if (!tableId) redirect('/')
 
-  const { data: table } = await supabase
-    .from('tables')
-    .select('*')
-    .eq('id', tableId)
-    .single()
+  // Session needed for user.id — cookie read only, no API call
+  const [{ data: { session } }, { data: table }] = await Promise.all([
+    supabase.auth.getSession(),
+    supabase.from('tables').select('*').eq('id', tableId).single(),
+  ])
 
   if (!table) redirect('/')
 
-  // Check if table already has an open order - load its items
-  const { data: existingOrder } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      order_items(
-        *,
-        product:products(*)
-      )
-    `)
-    .eq('table_id', tableId)
-    .eq('status', 'open')
-    .limit(1)
-    .single()
-
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*, products(*)')
-    .eq('is_active', true)
-    .order('display_order')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const userId = session?.user?.id
+  const [{ data: existingOrder }, { data: categories }, profileResult] = await Promise.all([
+    supabase.from('orders').select(`*, order_items(*, product:products(*))`).eq('table_id', tableId).eq('status', 'open').limit(1).single(),
+    supabase.from('categories').select('*, products(*)').eq('is_active', true).order('display_order'),
+    userId ? supabase.from('profiles').select('id').eq('id', userId).single() : Promise.resolve({ data: null }),
+  ])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">
@@ -74,7 +51,7 @@ export default async function NewOrderPage({
         <OrderForm
           table={table}
           categories={categories || []}
-          waiterId={profile?.id || user.id}
+          waiterId={profileResult?.data?.id || userId || ''}
           existingOrder={existingOrder || null}
         />
       </main>

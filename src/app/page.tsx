@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TableGrid } from '@/components/tables/table-grid'
@@ -6,24 +5,15 @@ import { StickyNotes } from '@/components/tables/sticky-notes'
 import { Button } from '@/components/ui/button'
 import { BarChart3, UtensilsCrossed, LogOut, Settings, ClipboardList, Inbox } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  const { data: tables } = await supabase
-    .from('tables')
-    .select('*')
-    .order('table_number')
-
-  const { data: stickyNotes } = await supabase
-    .from('sticky_notes')
-    .select('*, table:tables(table_number)')
-    .order('created_at', { ascending: false })
+  const [{ data: tables }, { data: stickyNotes }] = await Promise.all([
+    supabase.from('tables').select('*').order('table_number'),
+    supabase.from('sticky_notes').select('*, table:tables(table_number)').order('created_at', { ascending: false }),
+  ])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50/50 via-stone-50 to-orange-50/30">

@@ -1,12 +1,8 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TableManager } from '@/components/tables/table-manager'
 
 export default async function TablesPage() {
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
 
   const { data: tables } = await supabase
     .from('tables')

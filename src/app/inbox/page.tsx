@@ -1,12 +1,8 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { FeedbackInbox } from '@/components/feedback/feedback-inbox'
 
 export default async function InboxPage() {
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
 
   const { data: feedback } = await supabase
     .from('feedback')

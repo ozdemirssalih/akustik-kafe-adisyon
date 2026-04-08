@@ -2,9 +2,14 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
+  const { pathname } = request.nextUrl
+
+  // Public routes — skip auth entirely
+  if (pathname.startsWith('/m') || pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
+  let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,12 +20,10 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
-          supabaseResponse = NextResponse.next({
-            request,
-          })
+          supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -29,22 +32,15 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // getSession() cookie'den okur, getUser() API call yapar — çok daha hızlı
   const { data: { session } } = await supabase.auth.getSession()
 
-  if (
-    !session &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/m') &&
-    !request.nextUrl.pathname.startsWith('/_next') &&
-    !request.nextUrl.pathname.startsWith('/api')
-  ) {
+  if (!session && pathname !== '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  if (session && request.nextUrl.pathname === '/login') {
+  if (session && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
