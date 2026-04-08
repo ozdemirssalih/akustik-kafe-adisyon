@@ -29,13 +29,11 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // getSession() cookie'den okur, getUser() API call yapar — çok daha hızlı
+  const { data: { session } } = await supabase.auth.getSession()
 
-  // Redirect to login if not authenticated
   if (
-    !user &&
+    !session &&
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/m') &&
     !request.nextUrl.pathname.startsWith('/_next') &&
@@ -46,8 +44,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect to dashboard if authenticated and trying to access login
-  if (user && request.nextUrl.pathname === '/login') {
+  if (session && request.nextUrl.pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
