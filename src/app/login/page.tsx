@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
+import { Logo } from '@/components/ui/logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -38,7 +39,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 px-4">
       <Card className="w-full max-w-md shadow-xl border-stone-200/60">
         <div className="bg-gradient-to-r from-amber-700 to-amber-800 rounded-t-2xl p-8 text-center">
-          <img src="/logo.png" alt="Akustik Kafe" className="h-[200px] w-auto object-contain mx-auto" />
+          <div className="flex justify-center"><Logo height={200} /></div>
         </div>
         <CardContent className="p-6 pt-6">
           <form onSubmit={handleLogin} className="space-y-4">

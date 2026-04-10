@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/utils/currency'
+import { Logo } from '@/components/ui/logo'
 import { Coffee, UtensilsCrossed, MessageSquarePlus, X, Send } from 'lucide-react'
 
 interface PublicMenuProps {
@@ -42,7 +43,7 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
     <div className="min-h-screen bg-stone-950">
       {/* Hero Header */}
       <div className="bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 px-6 pt-10 pb-8 text-center relative">
-        <img src="/logo.png" alt="Akustik Kafe" className="h-[216px] w-auto object-contain mx-auto" />
+        <div className="flex justify-center"><Logo height={216} /></div>
         {/* Feedback button */}
         <button
           onClick={() => setShowFeedback(true)}
@@ -122,7 +123,7 @@ export function PublicMenu({ categories, products }: PublicMenuProps) {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-stone-800">
-        <img src="/logo.png" alt="Akustik Kafe" className="h-[48px] w-auto object-contain mx-auto opacity-40" />
+        <div className="flex justify-center opacity-40"><Logo height={48} priority={false} /></div>
       </footer>
 
       {/* Feedback Modal */}

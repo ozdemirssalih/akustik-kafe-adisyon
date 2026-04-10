@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Logo } from '@/components/ui/logo'
 import { ArrowLeft, Plus, Pencil, Trash2, X, Users } from 'lucide-react'
 
 interface TableManagerProps {
@@ -103,7 +104,7 @@ export function TableManager({ tables: initTables }: TableManagerProps) {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
+            <Logo height={168} />
           </div>
           <Button size="sm" onClick={openNew}>
             <Plus className="w-4 h-4 mr-1" />

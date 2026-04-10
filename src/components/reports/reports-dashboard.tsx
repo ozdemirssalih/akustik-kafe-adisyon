@@ -7,6 +7,7 @@ import { formatDateTime } from '@/lib/utils/date'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Logo } from '@/components/ui/logo'
 import { Banknote, CreditCard, ShoppingCart, TrendingUp, ArrowLeft } from 'lucide-react'
 
 interface ReportsDashboardProps {
@@ -75,7 +76,7 @@ export function ReportsDashboard({ todayOrders, allOrders }: ReportsDashboardPro
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
+            <Logo height={168} />
           </div>
           <div className="flex gap-2">
             <button

@@ -9,6 +9,7 @@ import { formatDateTime } from '@/lib/utils/date'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Logo } from '@/components/ui/logo'
 import { ArrowLeft, RotateCcw, Trash2, ChevronDown, ChevronUp, Search } from 'lucide-react'
 
 interface OrderHistoryProps {
@@ -92,7 +93,7 @@ export function OrderHistory({ orders: initOrders }: OrderHistoryProps) {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
+            <Logo height={168} />
           </div>
           <div className="flex gap-2">
             {(['all', 'open', 'closed', 'cancelled'] as const).map(f => (

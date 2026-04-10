@@ -7,6 +7,7 @@ import { formatDateTime } from '@/lib/utils/date'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Logo } from '@/components/ui/logo'
 import { ArrowLeft, Trash2, CheckCheck, Mail, MailOpen } from 'lucide-react'
 
 interface FeedbackInboxProps {
@@ -54,7 +55,7 @@ export function FeedbackInbox({ feedback: initFeedback }: FeedbackInboxProps) {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
-            <img src="/logo.png" alt="Akustik Kafe" className="h-[168px] w-auto object-contain" />
+            <Logo height={168} />
           </div>
           <div className="flex items-center gap-2">
             {unreadCount > 0 && (
