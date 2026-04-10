@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedActiveCategories } from '@/lib/supabase/cached'
 import { OrderDetails } from '@/components/orders/order-details'
 
 export default async function OrderDetailPage({
@@ -10,9 +11,9 @@ export default async function OrderDetailPage({
   const supabase = await createClient()
   const { id } = await params
 
-  const [{ data: order }, { data: categories }] = await Promise.all([
+  const [{ data: order }, categories] = await Promise.all([
     supabase.from('orders').select(`*, table:tables(*), order_items(*, product:products(*))`).eq('id', id).single(),
-    supabase.from('categories').select('*, products(*)').eq('is_active', true).order('display_order'),
+    getCachedActiveCategories(),
   ])
 
   if (!order) redirect('/')
@@ -21,7 +22,7 @@ export default async function OrderDetailPage({
     <div className="min-h-screen bg-gray-50">
       <OrderDetails
         order={order}
-        categories={categories || []}
+        categories={categories}
       />
     </div>
   )

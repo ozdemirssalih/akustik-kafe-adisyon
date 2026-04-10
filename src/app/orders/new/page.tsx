@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedActiveCategories } from '@/lib/supabase/cached'
 import { OrderForm } from '@/components/orders/order-form'
 
 export default async function NewOrderPage({
@@ -23,9 +24,9 @@ export default async function NewOrderPage({
   if (!table) redirect('/')
 
   const userId = session?.user?.id
-  const [{ data: existingOrder }, { data: categories }, profileResult] = await Promise.all([
+  const [{ data: existingOrder }, categories, profileResult] = await Promise.all([
     supabase.from('orders').select(`*, order_items(*, product:products(*))`).eq('table_id', tableId).eq('status', 'open').limit(1).single(),
-    supabase.from('categories').select('*, products(*)').eq('is_active', true).order('display_order'),
+    getCachedActiveCategories(),
     userId ? supabase.from('profiles').select('id').eq('id', userId).single() : Promise.resolve({ data: null }),
   ])
 
@@ -50,7 +51,7 @@ export default async function NewOrderPage({
       <main className="p-4">
         <OrderForm
           table={table}
-          categories={categories || []}
+          categories={categories}
           waiterId={profileResult?.data?.id || userId || ''}
           existingOrder={existingOrder || null}
         />

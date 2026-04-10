@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/utils/currency'
+import { invalidateMenu } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -145,6 +146,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
       .select('*, category:categories(name)')
       .order('display_order')
     if (newProducts) setProducts(newProducts)
+    invalidateMenu()
   }
 
   const deleteProduct = async (id: string) => {
@@ -152,6 +154,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
     const { error } = await supabase.from('products').delete().eq('id', id)
     if (error) { alert('Hata: ' + error.message); return }
     setProducts(products.filter(p => p.id !== id))
+    invalidateMenu()
   }
 
   const toggleAvailability = async (product: any) => {
@@ -163,6 +166,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
     setProducts(products.map(p =>
       p.id === product.id ? { ...p, is_available: !p.is_available } : p
     ))
+    invalidateMenu()
   }
 
   // === CATEGORY OPERATIONS ===
@@ -204,6 +208,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
       .select('*')
       .order('display_order')
     if (newCats) setCategories(newCats)
+    invalidateMenu()
   }
 
   const deleteCategory = async (id: string) => {
@@ -216,6 +221,7 @@ export function MenuManager({ categories: initCategories, products: initProducts
     const { error } = await supabase.from('categories').delete().eq('id', id)
     if (error) { alert('Hata: ' + error.message); return }
     setCategories(categories.filter(c => c.id !== id))
+    invalidateMenu()
   }
 
   // === REORDER OPERATIONS ===
